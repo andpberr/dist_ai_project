@@ -1,0 +1,76 @@
+\documentclass{article}
+ 
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{breakurl}
+\usepackage[margin=1in]{geometry}
+
+
+\title{Project Deliverable 2}
+\author{Andrew Berry}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+I pledge my honor that I have neither given nor received any unauthorized aid on this work.
+\section{Clarifications from Deliverable 2}
+No additional details were requested in the previous project update.
+\section{Accomplishments and Scheduling}
+Since the submission of the previous deliverable, I have assembled a working non-distributed version of the random forest algorithm, which will be adapted to a multi-agent system for the final result. Currently, I am working on a simple multiagent classifier against the dummy dataset. This first pass is expected to be completed by the end of this week. Project progress is roughly in line with the schedule with no significant issues anticipated.
+\section{Knowledge and Beliefs}
+All agents in my system will have the same initial knowledge base, which will be the training set from the hospital readmission and death rate data. Degrees of belief factor into my system in that any agent after the first one will consider the ``vote'' of the agent that precedes it as an alternative to the ``vote'' it finds on its own accord. The likelihood with which the agent chooses its predecessor's answer over its own independent answer is based on the number of estimators used by each of the two agents. Suppose that agent 1 has voted ``AZ'' and came to this vote using a random forest with 10 estimators. Suppose also that agent 2 finds that its random forest suggests ``MO'' using 5 estimators. If we take the list of these two values, $ \langle 10, 5 \rangle $, and normalize them to have them represent probabilities, we get $ \langle 0.67, 0.33 \rangle $, meaning that agent 2 is n times as likely to choose ``AZ'' as ``MO'' because it has a higher degree of belief about agent 1's choice, or more ``faith'' in agent 1's ability to produce a correct result (although it may not always be the case that the agent with more estimators correctly predicts the answer.
+
+
+
+
+% CS
+% 6366 Term Projects
+% Fall
+%  2016
+% Deliverable 3
+% Due: October 11, 2016 
+% You are to provide an update on your project. This document is to be posted to your project web page. I 
+% will retrieve it from there. Documents not posted by the start of class will be considered late and will 
+% receive a zero grade. I expect this document to be less than four pages.  
+% This document should contain the following items:
+
+% 1. Please provide any details that were requested in my feedback on your previous project update.  
+% A: There were none? 
+
+% 2. Please explain what you have accomplished since your submission of the project summary. Please 
+% be specific regarding any algorithm development, system design, and implementation work you 
+% have done. You do not need to provide actual code, but do need to provide sufficient evidence that 
+% you are making good progress on the project.
+% A: 
+
+% 3. Where is your project as compared to the provided schedule in the project summary? If you are 
+% behind or ahead of schedule, please explain why? If you are revising your schedule, please provide 
+% an updated schedule.  
+% A: 
+
+% 4. What aspects of your project do you expect will change from your previous submission 
+% and Why? 
+% How will you address those changes? For example, if you are choosing a different algorithm, 
+% why?
+% A: 
+
+% 5. You are to provide a discussion of how the following topic relates to your project. If you have 
+% already incorporated the topic into your proposal, then provide a brief review of that discussion. It 
+% is expected that you will provide a well thought out discussion.  
+% The topic is knowledge and beliefs. All projects will have agents with some level of knowledge
+% and may or may not require a representation of beliefs. 
+
+% •Describe the level of knowledge and beliefs required for your project. If you do not 
+% believe that you need these elements, please 
+% make sure you explain why.
+
+% •How will the knowledge and beliefs be employed in your project? What affect will they 
+% have on the agents and the overall project? 
+
+% •How will you represent knowledge and beliefs? Why is the representation sufficient for 
+% your project? 
+
+
+\end{document}

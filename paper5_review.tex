@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage[margin=1.0in]{geometry}
+
+\title{Review of \textit{Resource Abstraction for Reinforcement Learning in Multiagent Congestion Problems}}
+\author{Andrew Berry}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+
+I pledge my honor that I have neither given nor received unauthorized aid on this work.
+\section{Review}
+This paper presents resource abstraction, a novel approach for calculating rewards in multiagent congestion problems. 
+Before revealing this method, the paper introduces the already-existing notions of local reward, global reward, and distance reward 
+(the current state of the art method for calculating reward at the time of the paper's publication). The paper goes on to compare each of these to the resource
+abstraction approach in trials to show the performance, robustness, and scalability of the new approach.
+
+The resource abstraction method works by splitting the resources into groups. If a resource within the group is not congested, it receives a local reward. If it \textit{is} congested, however, it receives a value that is equal to the additive inverse of the local reward function, applied to the group to which the resource belong (this is illustrated in the paper using the follwing equation: $ H(b,t) = {-f}(W_b,\Psi_b,X_{b,t} $).
+
+A simple illustration of results is given using the Beach Problem Domain, in which tourists attempt to attend beaches as close to their capacity as possible, receiving negative 
+reward for overcrowding or under-attending with respect to the beach's capacity. First, a set of trials is run on the beach problem using local reward, global reward, difference 
+rewards, and several configurations of groups for resource abstraction using 100 agents. The first test conducted shows that the resource abstraction produces better results than 
+difference rewards for all configurations chosen in the $ num\_timesteps = 5 $ case. The second illustrates that for difference rewards to reach the same optimality, it requires at 
+least 15 timesteps.  The third test reveals that the best-performing resource abstraction example reaches optimality for any timestep count greater than 1 (although their chart jumps 
+directly from 1 to 5, so the reader is left wondering about performance for cases where $ 2 \le num\_timesteps \le 4 $. They next perform some similar tests using 1000 agents; these 
+tests have no method finding the true optimal solution, but resource abstraction always outperforms difference rewards in these tests.
+
+Encouraged by these results, the authors apply the same techniques to a more real-world problem of traffic congestion (in which the resources are traffic lanes), and the findings are 
+largely the same. Even in cases where traffic ``accidents'' are incorporated (i.e. weights and capacities change at a certain episode) or certain percentages of the agents are 
+non-compliant, resource abstraction is consistently revealed to perform better than difference rewards.
+
+The findings in this paper were straightforward to understand and seem to be a significant improvement over the current state-of-the-art difference reward method. 
+The authors discuss improved optimality, scalability and robustness when using resource abstraction compared to difference rewards. 
+One thing they did not mention, however was that in all (or at least most) test cases they ran, the standard error of the resource abstraction appears significantly lower than that of 
+difference rewards. This means that in addition to finding far more optimal solutions to congestion problems, it will actually have less variance within the values it produces. 
+
+\section{Discussion Questions}
+\begin{enumerate}
+\item In what types of problem instances might difference rewards still outperform resource abstraction?
+\item The abstract configurations that yielded the best performance were obtained via experimentation. What are some possible ways to systematically arrive at a 
+	best-performing configuration, so that we don't have to rely on this experimentation?
+\item $ \langle \langle $ insert last question here $ \rangle \rangle $
+
+\end{enumerate}
+
+\end{document}

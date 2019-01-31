@@ -1,0 +1,296 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{color}
+%\graphicspath{{}}
+
+\title{Using Abstractions to Solve Opportunistic Crime Security Games at Scale}
+\author{C. Zhang, V. Bucarey, A. Mukhopadhyay, A. Sinha, Y. Qian, Y. Vorobeychik, M. Tambe}
+\begin{document}
+	\frame{\titlepage}
+	\begin{frame}
+		\frametitle{Outline}
+		\begin{itemize}
+			\item Related Work and Background
+				\begin{itemize}
+					\item Stackelberg and Opportunistic Security Games
+					\item Machine Learning in Criminology
+					\item Dynamic Bayesian Network
+					\item Abstract Games
+				\end{itemize}
+			\item Contribution 1: Game Abstraction Framework
+			\item Contribution 2: Layer-Generating Algorithm
+			\item Contribution 3: Planning Algorithm
+			\item Contribution 4: Heuristic Propagation Model
+			\item Experimentation
+				\begin{itemize}
+					\item University of Southern California
+					\item Nashville Metro Area
+				\end{itemize}
+			\item Summary
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Stackelberg Security Games}
+		\begin{itemize}
+			\item Stackelberg Game: Game in which a "leader" agent makes an initial move and the "follower" agent moves afterward
+			\item Stackelberg Security Game: Patrolling officers as leader and criminal as follower
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Opportunistic Security Games}
+		\begin{itemize}
+			\item Model for opportunistic adversaries who:
+			\begin{itemize}
+				\item Opportunistically and repeatedly seek targets
+				\item React to new information at execution rather than planning in advance
+				\item Have limited observation of defender strategies
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Security Games Pros and Cons}
+		\begin{itemize}
+			\item Pros
+			\begin{itemize}
+				\item Allow extensions to handle real world scenarios
+			\end{itemize}
+			\item Cons
+			\begin{itemize}
+				\item Adversary models built from expert input (lacking detail)
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Machine Learning in Criminology}
+		\begin{itemize}
+			\item Analyze crime data and suggest police patrol strategies
+			\item Difference: This paper also examines interplay between attacker/defender
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Dynamic Bayesian Network}
+		A Bayesian Network which relates variables to each other from one time step to the next.\\
+		\includegraphics[width=3cm, height=5cm]{dbn}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Dynamic Bayesian Network}
+		\begin{itemize}
+			\item Pros:
+			\begin{itemize}
+				\item Predicts criminal behavior with high accuracy
+			\end{itemize}
+			\item Cons:
+			\begin{itemize}
+				\item Cannot scale to problems with a large number of targets (i.e. most real world examples)
+				\item Poor performance where defender's patrol data is limited
+				\item Restricted only to pure strategies
+			\end{itemize}
+
+		\end{itemize}
+	\end{frame}
+
+
+	\begin{frame}
+		\frametitle{Abstract Games}
+		\begin{itemize}
+			\item Abstract games in prior research focused on clustering actions, strategies or states
+			\item This paper merges targets, propagates abstractions to those new targets, and learns from real-world data
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Notation}
+		\begin{itemize}
+			\item $ N $ - Number of targets \\
+			\item $ T $ - Number of shifts \\
+			\item $ n $ - Largest scale of problem that can be handled by learning and planning
+			\item $ c^{i}_{1} $ - Number of crimes per shift at target $i$ with a defender present \\
+			\item $ c^{i}_{0} $ - Number of crimes per shift at target $i$ without a defender present \\
+			\item $ Dis_{ij} $ - Dissimilarity between $i$ and $j$ ($Dis_{ij} = |c^{i}_{1} - c^{j}_{1}| + |c^{i}_{0} - c^{j}_{0}|$) \\
+			\item $ I $ - Set of targets in original layer \\
+			\item $ K $ - size of partition of $I$ \\ 
+			\item $ I_{k} $ - k-sized subset of $I$ (functions as the aggregated target in the abstract layer) \\
+			\item $ Dis(I_{k}) $ - Inner dissimilarity of an aggregated target ($Dis(I_{k}) = \Sigma_{i,j \in I_{k}} Dis_{ij}$) \\
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Notation}
+		\begin{itemize}
+			\item $ d_{ij} $ - Physical distance between targets i and j \\
+			\item $ In(I_{k}) $ - Inertia of an aggregated target ($In(I_{k}) = min_{j}\Sigma_{i\in I_{k}}d_{ij}$) \\
+			\item $ \alpha $ - Normalization parameter \\
+			\item $ L_{I}(K) $ - information loss function ($min_{\{I_{k}\}^{K}_{k=1}\in \mathcal{P}_{K}(I)}\Sigma^{K}_{k=1} \alpha In(I_{k}) + Dis(I_{k}) $) \\
+			\item $ x_{j} $ - binary var; 1 if $j$ is the center of an aggregated target, 0 otherwise \\
+			\item $ y_{ij} $ - 1 if target $i$ is in $j$-centered aggregated target, 0 otherwise \\
+			\item $ z_{ik} $ - Equal to $Dis_{ik}$ if $i$ and $j$ are in the same aggregated target, 0 otherwise \\
+			\item $ A $ - movement matrix \\
+			\item $ B $ - crime matrix \\
+			\item $ Att_{n} $ - attractiveness of target $n$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Notation}
+		\begin{itemize}
+			\item $ \lambda $ - influence of num of criminals on criminal movement \\
+			\item $ \mu $ - influence of num of defenders on criminal movement \\
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Contribution 1: Game Abstraction Framework}
+		\begin{itemize}
+			\item Previous research deals with opportunistic crime, but fails to scale
+			\item This paper uses abstraction to address this
+			\item Abstract layer generated from original 
+				\begin{itemize}
+					\item Contains aggregated targets (aggregated from similar targets in original)
+				\end{itemize}
+		\end{itemize}
+		\includegraphics[width=3cm, height=5cm]{abstraction}
+	\end{frame}
+
+
+	\begin{frame}
+		\frametitle{Contribution 1: Game Abstraction Framework}
+		\begin{itemize}
+			\item Multiple layers of abstraction are possible, if warranted
+			\item Learning
+			\item Strategizing (abstract)
+			\item Propagation
+			\item Strategy for Original Layer
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Contribution 2: Layer-Generating Algorithm}
+		\begin{itemize}
+			\item Districting problem - Division into ``balanced'' subregions
+			\item Geometric Contstraints:
+				\begin{itemize}
+					\item Contiguity
+					\item Compactness
+					\item Environmental Constraints
+				\end{itemize}
+			\item Minimize dissimilarity within aggregated targets ($Dis_{ij}$)
+			\item Consideration of Scalability Constraint
+
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Contribution 2: Layer-Generating Algorithm}
+		\includegraphics[width=11cm, height=7cm]{generation_milp}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Contribution 2: Layer-Generating Algorithm}
+		\includegraphics[width=11cm, height=7cm]{generation_algorithm}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Dynamic Bayesian Network}
+		\begin{itemize}
+			\item Defenders (D)
+			\item Criminals (X)
+			\item Crimes committed (Y)
+			\item Nothing new; novelty comes from the propagation of adversary behavior parameters
+		\end{itemize}
+		\includegraphics[width=3cm, height=5cm]{dbn}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Contribution 3: Planning Algorithm}
+		\begin{itemize}
+			\item Focused on planning with mixed strategies
+			\item No loss of optimality
+			\item Less room for criminal exploitation
+		\end{itemize}
+		\includegraphics[width=10cm, height=6cm]{planning_optim}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Contribution 4: Heuristic Propagation Model}
+		\begin{itemize}
+			\item Direct learning (with sufficient data)
+			\item Parameter propagation (when data is limited)
+				\begin{itemize}
+					\item Uses Quantal Response model
+					\item Models probability of transition from one target to another as a function of attractiveness
+					\item Using with DBN adds influence of defenders and criminals at previous time step
+				\end{itemize}
+		\end{itemize}
+		\includegraphics[width=10cm, height=3cm]{propagation_optim}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Strategy Computation in Original Layer}
+		\begin{itemize}
+			\item Each aggregated target has its own DBN
+			\item Parameters $A$ and $B$ are used when there is sufficient data
+			\item $\lambda$, $\mu$, and $Att$ are used to reconstruct A and B, which are then used as DBN params
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Extension}
+		\begin{itemize}
+			\item When $n^2 < N$, there are too many targets for a 2-layer approach to work
+			\item Nesting occurs, and we end up with $M$ layers
+			\item $ M = \lfloor log_{n}N \rfloor + 1 $
+			\item Learn and plan at layer $M$, propagate to $M-1$, learn and plan at layer $M-1$, ... propagate to layer $1$
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{University of Southern California}
+		\begin{itemize}
+			\item $n=5$
+			\item $N=25$
+			\item Total crimes on the order of $10^2$
+			\item 2 layer abstraction
+			\item Limited patrol data (must learn $\lambda, \mu, Att$ and estimate parameters $A$ and $B$ )
+		\end{itemize}
+		\includegraphics[width=6cm, height=3cm]{usc}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Nashville Metro Area}
+		\begin{itemize}
+			\item $n=5$
+			\item $N=900$
+			\item Total crimes on the order of $10^3$
+			\item $M=\lfloor log_{5}900 \rfloor + 1 = 5$ layer abstraction
+			\item Detailed patrol data (GPS dispatches)
+		\end{itemize}
+		\includegraphics[width=3cm, height=3cm]{davidson}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Results}
+		\includegraphics[width=10cm, height=6cm]{results}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Summary}
+		\begin{itemize}
+			\item Aggregate targets in original layer to produce abstract layer
+			\item Conduct learning and develop patrol strategy in abstract layer
+			\item Propagate parameters for use in the DBNs of the original layer
+			\item Produce patrol strategy for original layer (mixed or pure)
+		\end{itemize}
+	\end{frame}
+
+	\begin{frame}
+		\frametitle{Questions?}
+		%{\huge {\color{blue} Questions?}}
+	\end{frame}
+
+\end{document}
